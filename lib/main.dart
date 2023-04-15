@@ -28,18 +28,82 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class home extends StatelessWidget {
+class home extends StatefulWidget {
   const home({super.key});
 
   @override
+  State<home> createState() => _homeState();
+}
+
+class _homeState extends State<home> with SingleTickerProviderStateMixin {
+  AnimationController? animationController;
+  late Animation<double> animation;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    animation =
+        Tween<double>(begin: 0, end: 2 * 3.14).animate(animationController!);
+    animationController!.repeat();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    animationController!.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
-        child: Text(
-          "hello Milan Bhingradiya",
-          style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                return Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()..rotateZ(animation!.value),
+                    child: CircleAvatar(
+                        radius: size.width / 8, // Image radius
+                        backgroundImage: AssetImage("assets/milan.png")));
+              },
+            ),
+            SizedBox(
+              width: size.width / 18,
+            ),
+            Flexible(
+              child: Text(
+                "hello Milan Bhingradiya",
+                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(
+              width: size.width / 18,
+            ),
+            AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                return Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()..rotateY(animation.value),
+                    child: CircleAvatar(
+                        radius: size.width / 8, // Image radius
+                        backgroundImage: AssetImage("assets/milan.png")));
+              },
+            ),
+          ],
         ),
       ),
     );
+    //s
   }
 }
